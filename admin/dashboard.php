@@ -52,7 +52,7 @@ $total_mon = $row_mon['total'];
             <a href="#" class="text-black font-normal">Trang chủ</a>
             <a href="#" class="hover:text-black">Quản lý sinh viên</a>
             <a href="#" class="hover:text-black">Quản lý lớp học</a>
-            <a href="#" class="hover:text-black">Môn học</a>
+            <a href="../qlMonHoc/viewMh.php" class="hover:text-black">Môn học</a>
             <a href="#" class="hover:text-black">Quản lý điểm</a>
             <a href="#" class="hover:text-black">Báo cáo</a>
         </nav>
