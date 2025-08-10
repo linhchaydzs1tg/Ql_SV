@@ -75,7 +75,7 @@ $total_mon = $row_mon['total'];
                     </div>
                     <ul class="py-2">
                         <li>
-                            <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                            <a href="ttcanhan.php" class="flex items-center px-4 py-2 hover:bg-gray-100">
                                 <i class="fas fa-key mr-2 text-gray-500"></i> Thông tin cá nhân
                             </a>
                         </li>
