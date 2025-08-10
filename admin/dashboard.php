@@ -51,10 +51,8 @@ $total_mon = $row_mon['total'];
         <nav class="hidden sm:flex space-x-6 text-sm text-[#475569] font-normal">
             <li><a class="hover:text-gray-900" href="dashboard.php">Trang chủ</a></li>
             <a href="student_manage.php" class="hover:text-black">Quản lý sinh viên</a>
-            <a href="#" class="hover:text-black">Quản lý lớp học</a>
-            <a href="#" class="hover:text-black">Môn học</a>
-            <a href="#" class="hover:text-black">Quản lý điểm</a>
-            <a href="#" class="hover:text-black">Báo cáo</a>
+            <a href="sub.php" class="hover:text-black">Môn học</a>
+            <a href="grades.php" class="hover:text-black">Quản lý điểm</a>
         </nav>
         </div>
         <div class="flex items-center space-x-6 text-gray-500 text-lg relative">

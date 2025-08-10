@@ -20,23 +20,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../admin/student_manage.php");
         exit;
     } else {
-        echo "Lỗi: " . $conn->error;
+        echo "<div class='text-red-500'>Lỗi: " . $conn->error . "</div>";
     }
 }
 ?>
 
-<form method="POST">
-    MSSV: <input type="text" name="mssv" required><br>
-    Họ tên: <input type="text" name="hoten" required><br>
-    Email: <input type="email" name="email" required><br>
-    Khoa: <input type="text" name="khoa" required><br>
-    Ngày sinh: <input type="date" name="ngaysinh" required><br>
-    Điểm TB: <input type="number" step="0.01" name="diem_tb" required><br>
-    Trạng thái: 
-    <select name="trang_thai">
-        <option>Đang học</option>
-        <option>Tốt nghiệp</option>
-    </select><br>
-    Lớp ID: <input type="number" name="lop_id"><br>
-    <button type="submit">Thêm sinh viên</button>
-</form>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm sinh viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">Thêm sinh viên</h2>
+        <form method="POST" class="space-y-4">
+            <input type="text" name="mssv" placeholder="MSSV" required class="w-full p-2 border rounded">
+            <input type="text" name="hoten" placeholder="Họ tên" required class="w-full p-2 border rounded">
+            <input type="email" name="email" placeholder="Email" required class="w-full p-2 border rounded">
+            <input type="text" name="khoa" placeholder="Khoa" required class="w-full p-2 border rounded">
+            <input type="date" name="ngaysinh" required class="w-full p-2 border rounded">
+            <input type="number" step="0.01" name="diem_tb" placeholder="Điểm trung bình" required class="w-full p-2 border rounded">
+            <select name="trang_thai" class="w-full p-2 border rounded">
+                <option value="Đang học">Đang học</option>
+                <option value="Tốt nghiệp">Tốt nghiệp</option>
+            </select>
+            <input type="number" name="lop_id" placeholder="Lớp ID" class="w-full p-2 border rounded">
+            
+            <div class="flex justify-between">
+                <a href="../admin/student_manage.php" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Quay lại</a>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Thêm mới</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

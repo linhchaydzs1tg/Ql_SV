@@ -22,28 +22,61 @@ if (!$result) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
     <style> body { font-family: 'Inter', sans-serif; } </style>
+ <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=school" />
 </head>
-<body class="bg-white text-gray-800">
-
-<header class="border-b border-gray-200">
-    <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
-        <div class="flex items-center space-x-6">
-            <a class="text-blue-600 font-bold text-lg select-none" href="#">logo</a>
+<body class="bg-[#f7f9fc] min-h-screen text-[#1e293b]">
+   <header class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
+    <div class="flex items-center space-x-6">
+        <a href="dashboard.php" class="text-blue-600 font-bold text-lg select-none">
+            <span class="material-symbols-outlined text-blue-600 font-extrabold text-3xl">school</span>
+        </a>
             <ul class="hidden md:flex space-x-6 text-sm text-gray-700 font-normal">
                 <li><a class="hover:text-gray-900" href="dashboard.php">Trang chủ</a></li>
-                <li><a class="hover:text-gray-900" href="#">Quản lý sinh viên</a></li>
-                <li><a class="hover:text-gray-900" href="#">Quản lý lớp học</a></li>
-                <li><a class="hover:text-gray-900" href="#">Môn học</a></li>
-                <li><a class="hover:text-gray-900" href="#">Quản lý điểm</a></li>
-                <li><a class="hover:text-gray-900" href="#">Báo cáo</a></li>
+                <li><a class="hover:text-gray-900" href="student_manage.php">Quản lý sinh viên</a></li>
+                <li><a class="hover:text-gray-900" href="sub.php">Môn học</a></li>
+                <li><a class="hover:text-gray-900" href="grades.php">Quản lý điểm</a></li>
             </ul>
+      </div>
+        <div class="flex items-center space-x-6 text-gray-500 text-lg relative">
+            <button aria-label="Thông báo" class="hover:text-black focus:outline-none">
+                <i class="fas fa-bell"></i>
+            </button>
+            <div class="relative" x-data="{ open: false }">
+                <button id="userMenuButton" aria-haspopup="true" aria-expanded="false" class="hover:text-black focus:outline-none" onclick="toggleUserMenu()">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+                <div id="userMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 text-sm text-gray-700 z-10">
+                    <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
+                       <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
+    <div>
+        <div class="text-black font-semibold text-sm"><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></div>
+        <div class="text-xs leading-4"><?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?></div>
+        <a href="#" class="text-xs text-blue-600 hover:underline">Quản Trị Viên</a>
+    </div>
+</div>
+                    </div>
+                    <ul class="py-2">
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                <i class="fas fa-key mr-2 text-gray-500"></i> Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2 text-gray-500"></i> Cài đặt hệ thống
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../auth/logout.php" class="flex items-center px-4 py-2 text-red-600 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-6 text-gray-500 text-lg">
-            <button aria-label="Thông báo" class="hover:text-gray-700"><i class="far fa-bell"></i></button>
-            <button aria-label="Tài khoản" class="hover:text-gray-700"><i class="far fa-user"></i></button>
-        </div>
-    </nav>
-</header>
+    </header>
 
 <main class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-12">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">

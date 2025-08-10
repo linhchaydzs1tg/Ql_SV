@@ -2,20 +2,14 @@
 require_once '../config/db.php';
 
 $mssv = $_GET['mssv'] ?? '';
-if (!$mssv) {
-    die("Không tìm thấy MSSV.");
-}
+if (!$mssv) die("Không tìm thấy MSSV.");
 
 $sql = "SELECT * FROM sinhvien WHERE mssv = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $mssv);
 $stmt->execute();
-$result = $stmt->get_result();
-$sv = $result->fetch_assoc();
-
-if (!$sv) {
-    die("Không tìm thấy sinh viên.");
-}
+$sv = $stmt->get_result()->fetch_assoc();
+if (!$sv) die("Không tìm thấy sinh viên.");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hoten = $_POST['hoten'];
@@ -34,23 +28,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../admin/student_manage.php");
         exit;
     } else {
-        echo "Lỗi: " . $conn->error;
+        echo "<div class='text-red-500'>Lỗi: " . $conn->error . "</div>";
     }
 }
 ?>
 
-<form method="POST">
-    MSSV: <input type="text" value="<?= htmlspecialchars($sv['mssv']) ?>" disabled><br>
-    Họ tên: <input type="text" name="hoten" value="<?= htmlspecialchars($sv['hoten']) ?>" required><br>
-    Email: <input type="email" name="email" value="<?= htmlspecialchars($sv['email']) ?>" required><br>
-    Khoa: <input type="text" name="khoa" value="<?= htmlspecialchars($sv['khoa']) ?>" required><br>
-    Ngày sinh: <input type="date" name="ngaysinh" value="<?= htmlspecialchars($sv['ngaysinh']) ?>" required><br>
-    Điểm TB: <input type="number" step="0.01" name="diem_tb" value="<?= htmlspecialchars($sv['diem_tb']) ?>" required><br>
-    Trạng thái: 
-    <select name="trang_thai">
-        <option <?= $sv['trang_thai'] == 'Đang học' ? 'selected' : '' ?>>Đang học</option>
-        <option <?= $sv['trang_thai'] == 'Tốt nghiệp' ? 'selected' : '' ?>>Tốt nghiệp</option>
-    </select><br>
-    Lớp ID: <input type="number" name="lop_id" value="<?= htmlspecialchars($sv['lop_id']) ?>"><br>
-    <button type="submit">Lưu thay đổi</button>
-</form>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa sinh viên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">Sửa thông tin sinh viên</h2>
+        <form method="POST" class="space-y-4">
+            <input type="text" value="<?= htmlspecialchars($sv['mssv']) ?>" disabled class="w-full p-2 border rounded bg-gray-200">
+            <input type="text" name="hoten" value="<?= htmlspecialchars($sv['hoten']) ?>" required class="w-full p-2 border rounded">
+            <input type="email" name="email" value="<?= htmlspecialchars($sv['email']) ?>" required class="w-full p-2 border rounded">
+            <input type="text" name="khoa" value="<?= htmlspecialchars($sv['khoa']) ?>" required class="w-full p-2 border rounded">
+            <input type="date" name="ngaysinh" value="<?= htmlspecialchars($sv['ngaysinh']) ?>" required class="w-full p-2 border rounded">
+            <input type="number" step="0.01" name="diem_tb" value="<?= htmlspecialchars($sv['diem_tb']) ?>" required class="w-full p-2 border rounded">
+            <select name="trang_thai" class="w-full p-2 border rounded">
+                <option value="Đang học" <?= $sv['trang_thai'] == 'Đang học' ? 'selected' : '' ?>>Đang học</option>
+                <option value="Tốt nghiệp" <?= $sv['trang_thai'] == 'Tốt nghiệp' ? 'selected' : '' ?>>Tốt nghiệp</option>
+            </select>
+            <input type="number" name="lop_id" value="<?= htmlspecialchars($sv['lop_id']) ?>" class="w-full p-2 border rounded">
+            
+            <div class="flex justify-between">
+                <a href="../admin/student_manage.php" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Quay lại</a>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
