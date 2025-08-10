@@ -154,6 +154,7 @@ $diem_list = $conn->query($sql);
         <nav class="hidden sm:flex space-x-6 text-sm text-[#475569] font-normal">
             <li><a class="hover:text-gray-900" href="dashboard.php">Trang chủ</a></li>
             <a href="student_manage.php" class="hover:text-black">Quản lý sinh viên</a>
+            <a href="teacher_manage.php" class="hover:text-black">Quản lý giáo viên</a>
             <a href="sub.php" class="hover:text-black">Môn học</a>
             <a href="grades.php" class="hover:text-black">Quản lý điểm</a>
         </nav>

@@ -84,6 +84,7 @@ $total_credits = $stat_data['total_credits'] ?? 0;
         <ul class="hidden md:flex space-x-6 text-sm text-gray-700 font-normal">
             <li><a class="hover:text-gray-900" href="dashboard.php">Trang chủ</a></li>
             <li><a class="hover:text-gray-900" href="student_manage.php">Quản lý sinh viên</a></li>
+            <li><a class="hover:text-gray-900" href="teacher_manage.php">Quản lý giáo viên</a></li>
             <li><a class="hover:text-gray-900" href="sub.php">Môn học</a></li>
             <li><a class="hover:text-gray-900" href="grades.php">Quản lý điểm</a></li>
         </ul>
