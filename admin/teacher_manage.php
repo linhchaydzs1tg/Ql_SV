@@ -1,8 +1,10 @@
 <?php
 require_once '../config/db.php'; // Kết nối DB
 
-// Query: lấy giáo viên
-$sql = "SELECT gv.id, gv.hoten, gv.email, gv.trang_thai FROM giaovien gv ORDER BY gv.hoten ASC";
+// Query: lấy giáo viên (có cột sodienthoai)
+$sql = "SELECT gv.id, gv.hoten, gv.email, gv.sodienthoai, gv.trang_thai 
+        FROM giaovien gv 
+        ORDER BY gv.hoten ASC";
 $result = $conn->query($sql);
 
 if (!$result) {
@@ -19,8 +21,9 @@ if (!$result) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
     <style> body { font-family: 'Inter', sans-serif; } </style>
- <head>
+<head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=school" />
+</head>
 </head>
 <body class="bg-[#f7f9fc] min-h-screen text-[#1e293b]">
    <header class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
@@ -91,6 +94,7 @@ if (!$result) {
                    <tr>
                        <th class="pl-4 font-semibold">Họ tên</th>
                        <th class="font-semibold">Email</th>
+                       <th class="font-semibold">Số điện thoại</th>
                        <th class="font-semibold">Trạng thái</th>
                        <th class="pr-4 font-semibold">Thao tác</th>
                    </tr>
@@ -103,6 +107,7 @@ if (!$result) {
                                    <p class="font-semibold text-gray-900"><?= htmlspecialchars($row['hoten']) ?></p>
                                </td>
                                <td class="py-3"><?= htmlspecialchars($row['email']) ?></td>
+                               <td class="py-3"><?= htmlspecialchars($row['sodienthoai']) ?></td>
                                <td class="py-3">
                                    <span class="inline-block <?= $row['trang_thai'] == 'Đang làm việc' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' ?> text-[9px] font-semibold px-2 py-0.5 rounded-full">
                                        <?= htmlspecialchars($row['trang_thai']) ?>
@@ -123,7 +128,7 @@ if (!$result) {
                        <?php endwhile; ?>
                    <?php else: ?>
                        <tr>
-                           <td colspan="4" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
+                           <td colspan="5" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
                        </tr>
                    <?php endif; ?>
                </tbody>
