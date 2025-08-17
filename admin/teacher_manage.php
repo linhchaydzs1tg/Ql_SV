@@ -1,12 +1,22 @@
 <?php
 require_once '../config/db.php'; // Kết nối DB
 
-// Query: lấy giáo viên
-$sql = "SELECT gv.id, gv.hoten, gv.email, gv.ngaysinh, gv.trang_thai
-        FROM giaovien gv
-        ORDER BY gv.hoten ASC";
-$result = $conn->query($sql);
+// Kiểm tra cột có trong bảng không
+$columns = [];
+$colRes = $conn->query("SHOW COLUMNS FROM giaovien");
+if ($colRes) {
+    while ($c = $colRes->fetch_assoc()) {
+        $columns[] = $c['Field'];
+    }
+}
+$hasTrangThai = in_array('trang_thai', $columns);
 
+// Build SELECT động: nếu thiếu trang_thai -> alias mặc định
+$selects = ['gv.id', 'gv.hoten', 'gv.email'];
+$selects[] = $hasTrangThai ? 'gv.trang_thai' : "'Đang làm việc' AS trang_thai";
+
+$sql = "SELECT " . implode(', ', $selects) . " FROM giaovien gv ORDER BY gv.hoten ASC";
+$result = $conn->query($sql);
 if (!$result) {
     die("Lỗi truy vấn: " . $conn->error);
 }
@@ -91,7 +101,6 @@ if (!$result) {
                     <tr>
                         <th class="pl-4 font-semibold">Họ tên</th>
                         <th class="font-semibold">Email</th>
-                        <th class="font-semibold">Ngày sinh</th>
                         <th class="font-semibold">Trạng thái</th>
                         <th class="pr-4 font-semibold">Thao tác</th>
                     </tr>
@@ -104,7 +113,6 @@ if (!$result) {
                                     <p class="font-semibold text-gray-900"><?= htmlspecialchars($row['hoten']) ?></p>
                                 </td>
                                 <td class="py-3"><?= htmlspecialchars($row['email']) ?></td>
-                                <td class="py-3"><?= htmlspecialchars($row['ngaysinh']) ?></td>
                                 <td class="py-3">
                                     <?php $tt = $row['trang_thai'] ?? 'Đang làm việc'; ?>
                                     <span class="inline-block <?= $tt == 'Đang làm việc' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' ?> text-[9px] font-semibold px-2 py-0.5 rounded-full">
@@ -112,12 +120,9 @@ if (!$result) {
                                     </span>
                                 </td>
                                 <td class="pr-4 py-3 flex items-center space-x-3 text-sm">
-                                    <!-- Sửa: truyền id -->
                                     <a href="../teacher/edit_teacher.php?id=<?= urlencode($row['id']) ?>" class="text-gray-600 hover:text-gray-800" title="Sửa">
                                         <i class="fas fa-pen"></i>
                                     </a>
-
-                                    <!-- Xóa: truyền id -->
                                     <a href="../teacher/delete_teacher.php?id=<?= urlencode($row['id']) ?>" onclick="return confirm('Xóa giáo viên này?')" class="text-red-600 hover:text-red-700" title="Xóa">
                                         <i class="fas fa-trash"></i>
                                     </a>
@@ -126,13 +131,12 @@ if (!$result) {
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
+                            <td colspan="4" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </section>
     </main>
-
 </body>
 </html>

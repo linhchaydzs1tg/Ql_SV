@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     case 'admin':
                         header("Location: ../admin/dashboard.php");
                         break;
-                    case 'giangvien':
+                    case 'giaovien':
                         header("Location: ../giangvien/dashboard_gv.php");
                         break;
                     case 'sinhvien':
