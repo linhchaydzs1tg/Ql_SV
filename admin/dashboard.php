@@ -23,6 +23,30 @@ $total_lop = $row_lop['total'];
 $result_mon = $conn->query("SELECT COUNT(*) AS total FROM monhoc");
 $row_mon = $result_mon->fetch_assoc();
 $total_mon = $row_mon['total'];
+
+// Xử lý tìm kiếm
+$search_results = [];
+if (isset($_GET['search'])) {
+    $search = htmlspecialchars($_GET['search']);
+    $stmt = $conn->prepare("SELECT * FROM sinhvien WHERE mssv LIKE ? OR hoten LIKE ?");
+    
+    if ($stmt === false) {
+        die('Lỗi chuẩn bị câu lệnh: ' . $conn->error);
+    }
+
+    $like_search = "%$search%";
+    $stmt->bind_param("ss", $like_search, $like_search);
+    
+    if (!$stmt->execute()) {
+        die('Lỗi thực thi câu lệnh: ' . $stmt->error);
+    }
+
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $search_results[] = $row;
+    }
+    $stmt->close();
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -38,9 +62,6 @@ $total_mon = $row_mon['total'];
             font-family: 'Inter', sans-serif;
         }
     </style>
-    <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=school" />
-</head>
 </head>
 <body class="bg-[#f7f9fc] min-h-screen text-[#1e293b]">
    <header class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
@@ -49,11 +70,11 @@ $total_mon = $row_mon['total'];
             <span class="material-symbols-outlined text-blue-600 font-extrabold text-3xl">school</span>
         </a>
         <nav class="hidden sm:flex space-x-6 text-sm text-[#475569] font-normal">
-            <a href="#" class="text-black font-normal">Trang chủ</a>
-            <a href="#" class="hover:text-black">Quản lý sinh viên</a>
-            <a href="#" class="hover:text-black">Môn học</a>
-            <a href="#" class="hover:text-black">Quản lý điểm</a>
-            <a href="#" class="hover:text-black">Báo cáo</a>
+            <li><a class="hover:text-gray-900" href="dashboard.php">Trang chủ</a></li>
+            <a href="student_manage.php" class="hover:text-black">Quản lý sinh viên</a>
+            <a href="teacher_manage.php" class="hover:text-black">Quản lý giáo viên</a>
+            <a href="sub.php" class="hover:text-black">Môn học</a>
+            <a href="grades.php" class="hover:text-black">Quản lý điểm</a>
         </nav>
         </div>
         <div class="flex items-center space-x-6 text-gray-500 text-lg relative">
@@ -66,13 +87,11 @@ $total_mon = $row_mon['total'];
                 </button>
                 <div id="userMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 text-sm text-gray-700 z-10">
                     <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
-                       <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
-    <div>
-        <div class="text-black font-semibold text-sm"><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></div>
-        <div class="text-xs leading-4"><?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?></div>
-        <a href="#" class="text-xs text-blue-600 hover:underline">Quản Trị Viên</a>
-    </div>
-</div>
+                        <div>
+                            <div class="text-black font-semibold text-sm"><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></div>
+                            <div class="text-xs leading-4"><?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?></div>
+                            <a href="#" class="text-xs text-blue-600 hover:underline">Quản Trị Viên</a>
+                        </div>
                     </div>
                     <ul class="py-2">
                         <li>
@@ -99,6 +118,16 @@ $total_mon = $row_mon['total'];
     <main class="px-6 py-6 max-w-7xl mx-auto">
         <h1 class="text-xl font-extrabold text-[#0f172a] mb-1">Trang chủ quản trị</h1>
         <p class="text-[#475569] text-sm mb-6">Tổng quan hệ thống quản lý sinh viên</p>
+
+        <!-- Form tìm kiếm -->
+        <div class="mb-6">
+            <form action="" method="GET" class="flex">
+                <input type="text" name="search" placeholder="Nhập tên hoặc mã sinh viên" class="border rounded-l-md p-2 flex-grow" required>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white rounded-r-md p-2">
+                    Tìm kiếm
+                </button>
+            </form>
+        </div>
 
         <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
             <div class="bg-white rounded-lg p-4 flex items-center justify-between shadow-sm">
@@ -130,58 +159,36 @@ $total_mon = $row_mon['total'];
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-lg p-6 shadow-sm">
-                <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Hoạt động gần đây</h2>
-                <ul class="space-y-4 text-xs text-[#475569]">
-                    <li class="flex items-start space-x-3">
-                        <div class="text-blue-500 mt-1">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <div>
-                            <div class="text-black font-semibold leading-tight">Cập nhật thông tin sinh viên</div>
-                            <div>5 phút trước</div>
-                        </div>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <div class="text-green-500 mt-1">
-                            <i class="fas fa-book-open"></i>
-                        </div>
-                        <div>
-                            <div class="text-black font-semibold leading-tight">Đăng ký lớp học mới</div>
-                            <div>15 phút trước</div>
-                        </div>
-                    </li>
-                    <li class="flex items-start space-x-3">
-                        <div class="text-purple-600 mt-1">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div>
-                            <div class="text-black font-semibold leading-tight">Cập nhật điểm cho sinh viên</div>
-                            <div>1 giờ trước</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="bg-white rounded-lg p-6 shadow-sm">
-                <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Thông báo hệ thống</h2>
-                <div class="mb-4 rounded border-l-4 border-yellow-400 bg-yellow-50 p-3 text-xs text-yellow-800">
-                    <div class="flex items-center space-x-2 mb-1">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Cần cập nhật thông tin sinh viên năm cuối</span>
-                    </div>
-                    <div class="pl-6">Hạn chót: <span class="font-semibold">15/01/2024</span></div>
-                </div>
-                <div class="rounded border-l-4 border-blue-400 bg-blue-50 p-3 text-xs text-blue-700">
-                    <div class="flex items-center space-x-2 mb-1">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Bảo trì hệ thống vào 2:00 AM ngày mai</span>
-                    </div>
-                    <div class="pl-6 text-blue-600 font-semibold">Thời gian dự kiến: 2 giờ</div>
-                </div>
-            </div>
+        <!-- Kết quả tìm kiếm -->
+        <?php if (!empty($search_results)): ?>
+        <section class="mb-6">
+            <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Kết quả tìm kiếm</h2>
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="border-b border-gray-200 px-4 py-2">Mã sinh viên</th>
+                        <th class="border-b border-gray-200 px-4 py-2">Họ và tên</th>
+                        <th class="border-b border-gray-200 px-4 py-2">Mã lớp</th>
+                        <th class="border-b border-gray-200 px-4 py-2">Khoa</th>
+                        <th class="border-b border-gray-200 px-4 py-2">Giới tính</th>
+                        <th class="border-b border-gray-200 px-4 py-2">Điểm trung bình</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($search_results as $student): ?>
+                    <tr>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['mssv']; ?></td>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['hoten']; ?></td>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['lop_id']; ?></td>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['khoa']; ?></td>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['gioitinh']; ?></td>
+                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['diem_tb']; ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </section>
+        <?php endif; ?>
     </main>
 
     <script>
