@@ -19,10 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $diem_tb = $_POST['diem_tb'];
     $trang_thai = $_POST['trang_thai'];
     $lop_id = $_POST['lop_id'];
+    $gioitinh = $_POST['gioitinh'];
+    $diachi = $_POST['diachi'];
+    $sodienthoai = $_POST['sodienthoai'];
 
-    $sql = "UPDATE sinhvien SET hoten=?, email=?, khoa=?, ngaysinh=?, diem_tb=?, trang_thai=?, lop_id=? WHERE mssv=?";
+    $sql = "UPDATE sinhvien SET hoten=?, email=?, khoa=?, ngaysinh=?, diem_tb=?, trang_thai=?, lop_id=?, gioitinh=?, diachi=?, sodienthoai=? WHERE mssv=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssdis", $hoten, $email, $khoa, $ngaysinh, $diem_tb, $trang_thai, $lop_id, $mssv);
+    $stmt->bind_param("sssssdissss", $hoten, $email, $khoa, $ngaysinh, $diem_tb, $trang_thai, $lop_id, $gioitinh, $diachi, $sodienthoai, $mssv);
 
     if ($stmt->execute()) {
         header("Location: ../admin/student_manage.php");
@@ -37,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sửa sinh viên</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -54,7 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="Đang học" <?= $sv['trang_thai'] == 'Đang học' ? 'selected' : '' ?>>Đang học</option>
                 <option value="Tốt nghiệp" <?= $sv['trang_thai'] == 'Tốt nghiệp' ? 'selected' : '' ?>>Tốt nghiệp</option>
             </select>
-            <input type="number" name="lop_id" value="<?= htmlspecialchars($sv['lop_id']) ?>" class="w-full p-2 border rounded">
+            <select name="gioitinh" class="w-full p-2 border rounded">
+                <option value="Nam" <?= $sv['gioitinh'] == 'Nam' ? 'selected' : '' ?>>Nam</option>
+                <option value="Nữ" <?= $sv['gioitinh'] == 'Nữ' ? 'selected' : '' ?>>Nữ</option>
+            </select>
+            <input type="text" name="diachi" value="<?= htmlspecialchars($sv['diachi']) ?>" class="w-full p-2 border rounded" placeholder="Địa chỉ">
+            <input type="text" name="sodienthoai" value="<?= htmlspecialchars($sv['sodienthoai']) ?>" class="w-full p-2 border rounded" placeholder="Số điện thoại">
+            <input type="number" name="lop_id" value="<?= htmlspecialchars($sv['lop_id']) ?>" class="w-full p-2 border rounded" placeholder="ID lớp">
             
             <div class="flex justify-between">
                 <a href="../admin/student_manage.php" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">Quay lại</a>

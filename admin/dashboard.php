@@ -159,34 +159,57 @@ if (isset($_GET['search'])) {
             </div>
         </section>
 
-        <!-- Kết quả tìm kiếm -->
-        <?php if (!empty($search_results)): ?>
-        <section class="mb-6">
-            <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Kết quả tìm kiếm</h2>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="border-b border-gray-200 px-4 py-2">Mã sinh viên</th>
-                        <th class="border-b border-gray-200 px-4 py-2">Họ và tên</th>
-                        <th class="border-b border-gray-200 px-4 py-2">Mã lớp</th>
-                        <th class="border-b border-gray-200 px-4 py-2">Khoa</th>
-                        <th class="border-b border-gray-200 px-4 py-2">Giới tính</th>
-                        <th class="border-b border-gray-200 px-4 py-2">Điểm trung bình</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($search_results as $student): ?>
-                    <tr>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['mssv']; ?></td>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['hoten']; ?></td>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['lop_id']; ?></td>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['khoa']; ?></td>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['gioitinh']; ?></td>
-                        <td class="border-b border-gray-200 px-4 py-2"><?php echo $student['diem_tb']; ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Hoạt động gần đây</h2>
+                <ul class="space-y-4 text-xs text-[#475569]">
+                    <li class="flex items-start space-x-3">
+                        <div class="text-blue-500 mt-1">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div>
+                            <div class="text-black font-semibold leading-tight">Cập nhật thông tin sinh viên</div>
+                            <div>5 phút trước</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <div class="text-green-500 mt-1">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div>
+                            <div class="text-black font-semibold leading-tight">Đăng ký lớp học mới</div>
+                            <div>15 phút trước</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <div class="text-purple-600 mt-1">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div>
+                            <div class="text-black font-semibold leading-tight">Cập nhật điểm cho sinh viên</div>
+                            <div>1 giờ trước</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Thông báo hệ thống</h2>
+                <div class="mb-4 rounded border-l-4 border-yellow-400 bg-yellow-50 p-3 text-xs text-yellow-800">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Cần cập nhật thông tin sinh viên năm cuối</span>
+                    </div>
+                    <div class="pl-6">Hạn chót: <span class="font-semibold">15/01/2024</span></div>
+                </div>
+                <div class="rounded border-l-4 border-blue-400 bg-blue-50 p-3 text-xs text-blue-700">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Bảo trì hệ thống vào 2:00 AM ngày mai</span>
+                    </div>
+                    <div class="pl-6 text-blue-600 font-semibold">Thời gian dự kiến: 2 giờ</div>
+                </div>
+            </div>
         </section>
         <?php endif; ?>
     </main>

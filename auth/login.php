@@ -19,23 +19,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            // 👉 Không dùng password_verify nữa – so sánh trực tiếp
+            // So sánh mật khẩu
             if ($matkhau === $user['matkhau']) {
-                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_id'] = $user['id']; // Lưu ID người dùng
+                $_SESSION['mssv'] = $user['mssv']; // Lưu MSSV
                 $_SESSION['ho_ten'] = $user['ho_ten'] ?? 'Không rõ';
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['vai_tro'] = $user['vaitro'];
+
+                // Nếu chọn "Nhớ tôi"
+                if (isset($_POST['remember_me'])) {
+                    setcookie("user_email", $email, time() + (86400 * 30), "/");
+                    setcookie("user_password", $matkhau, time() + (86400 * 30), "/");
+                }
 
                 // Chuyển hướng theo vai trò
                 switch ($user['vaitro']) {
                     case 'admin':
                         header("Location: ../admin/dashboard.php");
                         break;
-                    case 'giaovien':
-                        header("Location: ../giangvien/dashboard_gv.php");
+                    case 'giangvien':
+                        header("Location: ../giaovien/dashboard_gv.php");
                         break;
                     case 'sinhvien':
-                        header("Location: ../sinhvien/view_sv.php");
+                        header("Location: ../sinhvien/list_student.php");
                         break;
                     default:
                         $err = "Tài khoản không có vai trò hợp lệ.";
@@ -51,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -125,15 +131,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="login-container">
-        <span class="material-symbols-outlined">school</span> <!-- Biểu tượng thay thế cho logo -->
+        <span class="material-symbols-outlined">school</span>
         
         <h2>Đăng nhập hệ thống</h2>
 
         <?php if (!empty($err)) echo "<div class='error'>$err</div>"; ?>
 
         <form method="POST" action="">
-            <input type="text" name="email" placeholder="Email hoặc MSSV" required>
-            <input type="password" name="password" placeholder="Mật khẩu" required>
+            <input type="text" name="email" placeholder="Email hoặc MSSV" required value="<?= isset($_COOKIE['user_email']) ? $_COOKIE['user_email'] : '' ?>">
+            <input type="password" name="password" placeholder="Mật khẩu" required value="<?= isset($_COOKIE['user_password']) ? $_COOKIE['user_password'] : '' ?>">
+            <label>
+                <input type="checkbox" name="remember_me"> Nhớ tôi
+            </label>
             <input type="submit" value="Đăng nhập">
         </form>
     </div>
