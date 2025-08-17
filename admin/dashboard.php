@@ -148,8 +148,7 @@ $total_mon = $row_mon['total'];
                             <i class="fas fa-book-open"></i>
                         </div>
                         <div>
-                            <div class="text-black font-semibold leading-tight">Đăng ký lớp học mới</div>
-                            <div>15 phút trước</div>
+                            <div class="text-black font-semibold leading-tight">lớp học </div>
                         </div>
                     </li>
                     <li class="flex items-start space-x-3">
@@ -157,8 +156,7 @@ $total_mon = $row_mon['total'];
                             <i class="fas fa-book"></i>
                         </div>
                         <div>
-                            <div class="text-black font-semibold leading-tight">Cập nhật điểm cho sinh viên</div>
-                            <div>1 giờ trước</div>
+                            <div class="text-black font-semibold leading-tight">Môn học</div>
                         </div>
                     </li>
                 </ul>
@@ -166,13 +164,6 @@ $total_mon = $row_mon['total'];
 
             <div class="bg-white rounded-lg p-6 shadow-sm">
                 <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Thông báo hệ thống</h2>
-                <div class="mb-4 rounded border-l-4 border-yellow-400 bg-yellow-50 p-3 text-xs text-yellow-800">
-                    <div class="flex items-center space-x-2 mb-1">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Cần cập nhật thông tin sinh viên năm cuối</span>
-                    </div>
-                    <div class="pl-6">Hạn chót: <span class="font-semibold">15/01/2024</span></div>
-                </div>
                 <div class="rounded border-l-4 border-blue-400 bg-blue-50 p-3 text-xs text-blue-700">
                     <div class="flex items-center space-x-2 mb-1">
                         <i class="fas fa-info-circle"></i>
