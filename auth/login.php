@@ -1,7 +1,8 @@
 <?php
 session_start();
 require_once '../config/db.php';
-
+ini_set('display_errors', 1);
+error_reporting(E_ALL); 
 $err = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -22,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // So sánh mật khẩu
             if ($matkhau === $user['matkhau']) {
                 $_SESSION['user_id'] = $user['id']; // Lưu ID người dùng
-                $_SESSION['mssv'] = $user['mssv']; // Lưu MSSV
                 $_SESSION['ho_ten'] = $user['ho_ten'] ?? 'Không rõ';
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['vai_tro'] = $user['vaitro'];
@@ -38,8 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     case 'admin':
                         header("Location: ../admin/dashboard.php");
                         break;
-                    case 'giangvien':
-                        header("Location: ../giaovien/dashboard_gv.php");
+                    case 'giaovien':
+                        header("Location: ../giangvien/dashboard_gv.php");
                         break;
                     case 'sinhvien':
                         header("Location: ../sinhvien/list_student.php");

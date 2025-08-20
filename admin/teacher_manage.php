@@ -1,21 +1,10 @@
 <?php
 require_once '../config/db.php'; // Kết nối DB
 
-// Kiểm tra cột có trong bảng không
-$columns = [];
-$colRes = $conn->query("SHOW COLUMNS FROM giaovien");
-if ($colRes) {
-    while ($c = $colRes->fetch_assoc()) {
-        $columns[] = $c['Field'];
-    }
-}
-$hasTrangThai = in_array('trang_thai', $columns);
-
-// Build SELECT động: nếu thiếu trang_thai -> alias mặc định
-$selects = ['gv.id', 'gv.hoten', 'gv.email'];
-$selects[] = $hasTrangThai ? 'gv.trang_thai' : "'Đang làm việc' AS trang_thai";
-
-$sql = "SELECT " . implode(', ', $selects) . " FROM giaovien gv ORDER BY gv.hoten ASC";
+// Query: lấy giáo viên (có cột sodienthoai)
+$sql = "SELECT gv.id, gv.hoten, gv.email, gv.sodienthoai, gv.trang_thai 
+        FROM giaovien gv 
+        ORDER BY gv.hoten ASC";
 $result = $conn->query($sql);
 if (!$result) {
     die("Lỗi truy vấn: " . $conn->error);
@@ -31,8 +20,9 @@ if (!$result) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
     <style> body { font-family: 'Inter', sans-serif; } </style>
- <head>
+<head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=school" />
+</head>
 </head>
 <body class="bg-[#f7f9fc] min-h-screen text-[#1e293b]">
    <header class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
@@ -97,48 +87,53 @@ if (!$result) {
            </a>
        </div>
 
-        <section class="bg-white border border-gray-100 rounded-lg p-4">
-            <table class="w-full text-left text-gray-700 text-xs border-separate border-spacing-y-2">
-                <thead>
-                    <tr>
-                        <th class="pl-4 font-semibold">Họ tên</th>
-                        <th class="font-semibold">Email</th>
-                        <th class="font-semibold">Trạng thái</th>
-                        <th class="pr-4 font-semibold">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr class="bg-white rounded-lg shadow-sm">
-                                <td class="pl-4 py-3">
-                                    <p class="font-semibold text-gray-900"><?= htmlspecialchars($row['hoten']) ?></p>
-                                </td>
-                                <td class="py-3"><?= htmlspecialchars($row['email']) ?></td>
-                                <td class="py-3">
-                                    <?php $tt = $row['trang_thai'] ?? 'Đang làm việc'; ?>
-                                    <span class="inline-block <?= $tt == 'Đang làm việc' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' ?> text-[9px] font-semibold px-2 py-0.5 rounded-full">
-                                        <?= htmlspecialchars($tt) ?>
-                                    </span>
-                                </td>
-                                <td class="pr-4 py-3 flex items-center space-x-3 text-sm">
-                                    <a href="../teacher/edit_teacher.php?id=<?= urlencode($row['id']) ?>" class="text-gray-600 hover:text-gray-800" title="Sửa">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                    <a href="../teacher/delete_teacher.php?id=<?= urlencode($row['id']) ?>" onclick="return confirm('Xóa giáo viên này?')" class="text-red-600 hover:text-red-700" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </section>
-    </main>
+       <section class="bg-white border border-gray-100 rounded-lg p-4">
+           <table class="w-full text-left text-gray-700 text-xs border-separate border-spacing-y-2">
+               <thead>
+                   <tr>
+                       <th class="pl-4 font-semibold">Họ tên</th>
+                       <th class="font-semibold">Email</th>
+                       <th class="font-semibold">Số điện thoại</th>
+                       <th class="font-semibold">Trạng thái</th>
+                       <th class="pr-4 font-semibold">Thao tác</th>
+                   </tr>
+               </thead>
+               <tbody>
+                   <?php if ($result->num_rows > 0): ?>
+                       <?php while ($row = $result->fetch_assoc()): ?>
+                           <tr class="bg-white rounded-lg shadow-sm">
+                               <td class="pl-4 py-3">
+                                   <p class="font-semibold text-gray-900"><?= htmlspecialchars($row['hoten']) ?></p>
+                               </td>
+                               <td class="py-3"><?= htmlspecialchars($row['email']) ?></td>
+                               <td class="py-3"><?= htmlspecialchars($row['sodienthoai']) ?></td>
+                               <td class="py-3">
+                                   <span class="inline-block <?= $row['trang_thai'] == 'Đang làm việc' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' ?> text-[9px] font-semibold px-2 py-0.5 rounded-full">
+                                       <?= htmlspecialchars($row['trang_thai']) ?>
+                                   </span>
+                               </td>
+                               <td class="pr-4 py-3 flex items-center space-x-3 text-sm">
+                                   <!-- Sửa: truyền id -->
+                                   <a href="edit_teacher.php?id=<?= urlencode($row['id']) ?>" class="text-gray-600 hover:text-gray-800" title="Sửa">
+                                       <i class="fas fa-pen"></i>
+                                   </a>
+
+                                   <!-- Xóa: truyền id -->
+                                   <a href="delete_teacher.php?id=<?= urlencode($row['id']) ?>" onclick="return confirm('Xóa giáo viên này?')" class="text-red-600 hover:text-red-700" title="Xóa">
+                                       <i class="fas fa-trash"></i>
+                                   </a>
+                               </td>
+                           </tr>
+                       <?php endwhile; ?>
+                   <?php else: ?>
+                       <tr>
+                           <td colspan="5" class="text-center py-6 text-gray-500">Chưa có dữ liệu giáo viên.</td>
+                       </tr>
+                   <?php endif; ?>
+               </tbody>
+           </table>
+       </section>
+   </main>
+
 </body>
 </html>

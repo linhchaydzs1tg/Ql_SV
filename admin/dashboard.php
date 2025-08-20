@@ -23,30 +23,6 @@ $total_lop = $row_lop['total'];
 $result_mon = $conn->query("SELECT COUNT(*) AS total FROM monhoc");
 $row_mon = $result_mon->fetch_assoc();
 $total_mon = $row_mon['total'];
-
-// Xử lý tìm kiếm
-$search_results = [];
-if (isset($_GET['search'])) {
-    $search = htmlspecialchars($_GET['search']);
-    $stmt = $conn->prepare("SELECT * FROM sinhvien WHERE mssv LIKE ? OR hoten LIKE ?");
-    
-    if ($stmt === false) {
-        die('Lỗi chuẩn bị câu lệnh: ' . $conn->error);
-    }
-
-    $like_search = "%$search%";
-    $stmt->bind_param("ss", $like_search, $like_search);
-    
-    if (!$stmt->execute()) {
-        die('Lỗi thực thi câu lệnh: ' . $stmt->error);
-    }
-
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-        $search_results[] = $row;
-    }
-    $stmt->close();
-}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -62,6 +38,9 @@ if (isset($_GET['search'])) {
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=school" />
+</head>
 </head>
 <body class="bg-[#f7f9fc] min-h-screen text-[#1e293b]">
    <header class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
@@ -87,11 +66,13 @@ if (isset($_GET['search'])) {
                 </button>
                 <div id="userMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 text-sm text-gray-700 z-10">
                     <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
-                        <div>
-                            <div class="text-black font-semibold text-sm"><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></div>
-                            <div class="text-xs leading-4"><?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?></div>
-                            <a href="#" class="text-xs text-blue-600 hover:underline">Quản Trị Viên</a>
-                        </div>
+                       <div class="flex items-center space-x-3 px-4 py-3 border-b border-gray-200">
+    <div>
+        <div class="text-black font-semibold text-sm"><?php echo isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin'; ?></div>
+        <div class="text-xs leading-4"><?php echo isset($_SESSION['email']) ? $_SESSION['email'] : ''; ?></div>
+        <a href="#" class="text-xs text-blue-600 hover:underline">Quản Trị Viên</a>
+    </div>
+</div>
                     </div>
                     <ul class="py-2">
                         <li>
@@ -118,16 +99,6 @@ if (isset($_GET['search'])) {
     <main class="px-6 py-6 max-w-7xl mx-auto">
         <h1 class="text-xl font-extrabold text-[#0f172a] mb-1">Trang chủ quản trị</h1>
         <p class="text-[#475569] text-sm mb-6">Tổng quan hệ thống quản lý sinh viên</p>
-
-        <!-- Form tìm kiếm -->
-        <div class="mb-6">
-            <form action="" method="GET" class="flex">
-                <input type="text" name="search" placeholder="Nhập tên hoặc mã sinh viên" class="border rounded-l-md p-2 flex-grow" required>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white rounded-r-md p-2">
-                    Tìm kiếm
-                </button>
-            </form>
-        </div>
 
         <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
             <div class="bg-white rounded-lg p-4 flex items-center justify-between shadow-sm">
@@ -177,8 +148,7 @@ if (isset($_GET['search'])) {
                             <i class="fas fa-book-open"></i>
                         </div>
                         <div>
-                            <div class="text-black font-semibold leading-tight">Đăng ký lớp học mới</div>
-                            <div>15 phút trước</div>
+                            <div class="text-black font-semibold leading-tight">lớp học </div>
                         </div>
                     </li>
                     <li class="flex items-start space-x-3">
@@ -186,8 +156,7 @@ if (isset($_GET['search'])) {
                             <i class="fas fa-book"></i>
                         </div>
                         <div>
-                            <div class="text-black font-semibold leading-tight">Cập nhật điểm cho sinh viên</div>
-                            <div>1 giờ trước</div>
+                            <div class="text-black font-semibold leading-tight">Môn học</div>
                         </div>
                     </li>
                 </ul>
@@ -195,13 +164,6 @@ if (isset($_GET['search'])) {
 
             <div class="bg-white rounded-lg p-6 shadow-sm">
                 <h2 class="font-semibold text-sm text-[#0f172a] mb-4">Thông báo hệ thống</h2>
-                <div class="mb-4 rounded border-l-4 border-yellow-400 bg-yellow-50 p-3 text-xs text-yellow-800">
-                    <div class="flex items-center space-x-2 mb-1">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>Cần cập nhật thông tin sinh viên năm cuối</span>
-                    </div>
-                    <div class="pl-6">Hạn chót: <span class="font-semibold">15/01/2024</span></div>
-                </div>
                 <div class="rounded border-l-4 border-blue-400 bg-blue-50 p-3 text-xs text-blue-700">
                     <div class="flex items-center space-x-2 mb-1">
                         <i class="fas fa-info-circle"></i>
@@ -211,7 +173,6 @@ if (isset($_GET['search'])) {
                 </div>
             </div>
         </section>
-        <?php endif; ?>
     </main>
 
     <script>
@@ -236,5 +197,6 @@ if (isset($_GET['search'])) {
             }
         });
     </script>
+        <?php include '../chat/chat.php'; ?>
 </body>
 </html>
