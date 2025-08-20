@@ -159,6 +159,9 @@ $tin_chi = 120;
                 menu.classList.remove('active');
             }
         });
-    </script>
+     </script>
+        <?php include '../chat/chat.php'; ?>
+</body>
+
 </body>
 </html>

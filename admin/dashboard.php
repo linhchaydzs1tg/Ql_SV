@@ -197,5 +197,6 @@ $total_mon = $row_mon['total'];
             }
         });
     </script>
+        <?php include '../chat/chat.php'; ?>
 </body>
 </html>
