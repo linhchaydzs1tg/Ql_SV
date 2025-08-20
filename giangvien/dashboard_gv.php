@@ -4,7 +4,7 @@ session_start();
 
 /* ========= BẢO VỆ ĐĂNG NHẬP ========= */
 if (!isset($_SESSION['user_id']) || ($_SESSION['vai_tro'] ?? '') !== 'giaovien') {
-    header("Location: ../login.php");
+    header("Location: ../auth/login.php"); // login.php nằm trong /auth
     exit();
 }
 $giaovien_id = (int)($_SESSION['id_thamchieu'] ?? 0);
@@ -19,7 +19,7 @@ $mysqli->set_charset("utf8mb4");
 /* ========= TIỆN ÍCH ========= */
 function time_range_from_tiet(int $tietbatdau, int $sotiet, string $base = "08:00", int $mins_per_tiet = 45): array {
     // Quy ước: Tiết 1 bắt đầu 08:00, mỗi tiết 45 phút
-    $base_ts = strtotime($base);
+    $base_ts  = strtotime($base);
     $start_ts = $base_ts + ($tietbatdau - 1) * $mins_per_tiet * 60;
     $end_ts   = $start_ts + $sotiet * $mins_per_tiet * 60;
     return [date("H:i", $start_ts), date("H:i", $end_ts)];
@@ -41,18 +41,24 @@ if ($giaovien_id > 0) {
 }
 
 /* ========= THỐNG KÊ ========= */
-$soSinhVien = (int)$mysqli->query("SELECT COUNT(*) c FROM sinhvien")->fetch_assoc()['c'];
-$soLop      = (int)$mysqli->query("SELECT COUNT(*) c FROM lop")->fetch_assoc()['c'];
-// Tạm coi "Bài kiểm tra" = số môn GV phụ trách (chưa có bảng bài kiểm tra riêng)
+$soSinhVien = 0;
+$soLop      = 0;
 $soBaiKT    = 0;
+$tiLeCoMat  = 94; // demo
+
+if ($res = $mysqli->query("SELECT COUNT(*) c FROM sinhvien")) {
+    $soSinhVien = (int)$res->fetch_assoc()['c'];
+}
+if ($res = $mysqli->query("SELECT COUNT(*) c FROM lop")) {
+    $soLop = (int)$res->fetch_assoc()['c'];
+}
+// Tạm coi "Bài kiểm tra" = số môn GV phụ trách (chưa có bảng bài kiểm tra riêng)
 if ($st = $mysqli->prepare("SELECT COUNT(*) c FROM monhoc WHERE giaovien_id = ?")) {
     $st->bind_param("i", $giaovien_id);
     $st->execute();
     $soBaiKT = (int)$st->get_result()->fetch_assoc()['c'];
     $st->close();
 }
-// Chưa có bảng điểm danh => demo
-$tiLeCoMat  = 94;
 
 /* ========= LỊCH DẠY HÔM NAY ========= */
 $thuToday = (string)date('N'); // 1..7
@@ -77,7 +83,6 @@ $hoatDong = [
     ["text" => "Nhập điểm Toán học lớp 11B2", "time" => "4 giờ trước"],
     ["text" => "Add new user vào lớp 10A3", "time" => "1 ngày trước"],
 ];
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -109,7 +114,8 @@ $hoatDong = [
                     <div><?= htmlspecialchars($email) ?></div>
                 </div>
                 <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center">👩‍🏫</div>
-                <a href="../logout.php" class="hidden sm:inline-block text-sm px-3 py-1.5 rounded-md border text-slate-700 hover:bg-slate-50">Đăng xuất</a>
+                <!-- Link đăng xuất: dùng file trong /auth như bạn yêu cầu -->
+                <a href="/QL_SV/auth/logout.php" class="hidden sm:inline-block text-sm px-3 py-1.5 rounded-md border text-slate-700 hover:bg-slate-50">Đăng xuất</a>
             </div>
         </div>
     </header>
@@ -192,16 +198,29 @@ $hoatDong = [
 
         <!-- Lối tắt -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-            <a href="#" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
+            <a href="sinhvien.php" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
                 <div class="w-10 h-10 rounded-lg bg-blue-600/10 flex items-center justify-center mb-2">🔎</div>
                 <div class="font-semibold">Sinh viên</div>
                 <div class="text-sm text-slate-500">Quản lý danh sách</div>
             </a>
-            <a href="#" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
+            <a href="lophoc.php" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
                 <div class="w-10 h-10 rounded-lg bg-emerald-600/10 flex items-center justify-center mb-2">📋</div>
                 <div class="font-semibold">Lớp học</div>
                 <div class="text-sm text-slate-500">Quản lý lớp học</div>
             </a>
-            <a href="#" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
+            <a href="diemso.php" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
                 <div class="w-10 h-10 rounded-lg bg-violet-600/10 flex items-center justify-center mb-2">🗂️</div>
                 <div class="font-semibold">Điểm số</div>
+                <div class="text-sm text-slate-500">Nhập/Xem điểm</div>
+            </a>
+            <a href="diemdanh.php" class="bg-white rounded-xl shadow-sm p-5 hover:shadow transition">
+                <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center mb-2">🕒</div>
+                <div class="font-semibold">Điểm danh</div>
+                <div class="text-sm text-slate-500">Ghi nhận chuyên cần</div>
+            </a>
+        </section>
+    </main>
+
+    <?php include '../chat/chat.php'; ?>
+</body>
+</html>
